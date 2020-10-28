@@ -1,8 +1,9 @@
 /* global $, JitsiMeetJS */
 
+const roomId = "asdcxzvsdasfgwesafsifoweieopwsjacjxklcasd";
 const options = {
   openBridgeChannel: true,
-  serviceUrl: /* PASTE YOUR OWN */,
+  serviceUrl: "" /* PASTE YOUR OWN */,
   hosts: {
     domain: "meet.jitsi",
     muc: "muc.meet.jitsi",
@@ -135,10 +136,7 @@ function onUserLeft(id) {
  * That function is called when connection is established successfully
  */
 function onConnectionSuccess() {
-  room = window.app.room = connection.initJitsiConference(
-    "asdcxzvsdasfgwesafsifoweieopwsjacjxklcasd",
-    options
-  );
+  room = window.app.room = connection.initJitsiConference(roomId, options);
   room.setDisplayName(
     JSON.stringify({
       id: "local-jitsi",
