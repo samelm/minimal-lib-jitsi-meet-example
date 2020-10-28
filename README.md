@@ -1,4 +1,4 @@
-# Minimun working example using lib-jitsi-meet
+# Minimal working example using lib-jitsi-meet
 
 ## Getting started
 - `npm install`
