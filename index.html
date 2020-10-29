@@ -4,10 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minimal Jitsi Example</title>
+    <style>
+      body {
+        margin: 4px;
+        padding: 0;
+        font-family: sans-serif;
+      }
+
+      .streams {
+        display: flex;
+      }
+
+      video {
+        border-radius: 8px;
+        width: 400px;
+        margin-right: 10px;
+      }
+
+      .localUserInfo span {
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
+    <div class="localUserInfo">
+      <h3>Local user info</h3>
+      <div class="localUserInfoId">id: <span></span></div>
+      <div class="localUserInfoName">name: <span></span></div>
+    </div>
+    <div class="streams"></div>
     <script src="https://unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
     <script src="https://meet.jit.si/libs/lib-jitsi-meet.min.js"></script>
+    <script src="./node_modules/faker/dist/faker.min.js"></script>
     <script src="./main.js"></script>
   </body>
 </html>

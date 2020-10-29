@@ -49,10 +49,10 @@ function onLocalTracks(tracks) {
         console.log(`track audio output device was changed to ${deviceId}`)
     );
     if (localTracks[i].getType() === "video") {
-      $("body").append(`<video autoplay='1' id='localVideo${i}' />`);
+      $(".streams").append(`<video autoplay='1' id='localVideo${i}' />`);
       localTracks[i].attach($(`#localVideo${i}`)[0]);
     } else {
-      $("body").append(
+      $(".streams").append(
         `<audio autoplay='1' muted='true' id='localAudio${i}' />`
       );
       localTracks[i].attach($(`#localAudio${i}`)[0]);
@@ -98,9 +98,13 @@ function onRemoteTrack(track) {
   const id = participant + track.getType() + idx;
 
   if (track.getType() === "video") {
-    $("body").append(`<video autoplay='1' id='${participant}video${idx}' />`);
+    $(".streams").append(
+      `<video autoplay='1' id='${participant}video${idx}' />`
+    );
   } else {
-    $("body").append(`<audio autoplay='1' id='${participant}audio${idx}' />`);
+    $(".streams").append(
+      `<audio autoplay='1' id='${participant}audio${idx}' />`
+    );
   }
   track.attach($(`#${id}`)[0]);
 }
@@ -132,18 +136,31 @@ function onUserLeft(id) {
   }
 }
 
+function setDisplayName() {
+  if (!sessionStorage.getItem("data")) {
+    sessionStorage.setItem(
+      "data",
+      JSON.stringify({
+        id: `local-jitsi-${faker.random.uuid()}`,
+        name: faker.name.findName(),
+        role: "teacher",
+      })
+    );
+  }
+
+  room.setDisplayName(sessionStorage.getItem("data"));
+
+  const parsedStorageData = JSON.parse(sessionStorage.getItem("data"));
+  $(".localUserInfoId span").text(parsedStorageData.id);
+  $(".localUserInfoName span").text(parsedStorageData.name);
+}
+
 /**
  * That function is called when connection is established successfully
  */
 function onConnectionSuccess() {
   room = window.app.room = connection.initJitsiConference(roomId, options);
-  room.setDisplayName(
-    JSON.stringify({
-      id: "local-jitsi",
-      role: "teacher",
-      name: "Doctor Dolittle",
-    })
-  );
+  setDisplayName();
   room.on(JitsiMeetJS.events.conference.TRACK_ADDED, onRemoteTrack);
   room.on(JitsiMeetJS.events.conference.TRACK_REMOVED, (track) => {
     console.log(`track removed!!!${track}`);
