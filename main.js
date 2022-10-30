@@ -1,19 +1,24 @@
-/* global $, JitsiMeetJS */
+const roomId = "minimal-lib-jitsi-meet-example-room";
+const domain = "meet.jit.si";
 
-const roomId = "asdcxzvsdasfgwesafsifoweieopwsjacjxklcasd";
-const options = {
-  openBridgeChannel: true,
-  serviceUrl: "" /* PASTE YOUR OWN */,
-  hosts: {
-    domain: "meet.jitsi",
-    muc: "muc.meet.jitsi",
-    focus: "focus.meet.jitsi",
-  },
-  useStunTurn: true,
+const initOptions = {
+  disableAudioLevels: true,
+};
+
+const conferenceOptions = {
   p2p: {
     enabled: false,
-    useStunTurn: true,
   },
+};
+
+const connectionOptions = {
+  serviceUrl: `https://${domain}/http-bind?room=${roomId}`,
+  hosts: {
+    domain: domain,
+    muc: `conference.${domain}`,
+    focus: `focus.${domain}`,
+  },
+  clientNode: "http://jitsi.org/jitsimeet",
 };
 
 let connection = null;
@@ -141,14 +146,13 @@ function setDisplayName() {
     sessionStorage.setItem(
       "data",
       JSON.stringify({
-        id: `local-jitsi-${faker.random.uuid()}`,
-        name: faker.name.findName(),
-        role: "teacher",
+        id: `local-jitsi-12512412`,
+        name: "Vladislav",
       })
     );
   }
 
-  room.setDisplayName(sessionStorage.getItem("data"));
+  // room.setDisplayName(sessionStorage.getItem("data"));
 
   const parsedStorageData = JSON.parse(sessionStorage.getItem("data"));
   $(".localUserInfoId span").text(parsedStorageData.id);
@@ -159,8 +163,11 @@ function setDisplayName() {
  * That function is called when connection is established successfully
  */
 function onConnectionSuccess() {
-  room = window.app.room = connection.initJitsiConference(roomId, options);
-  setDisplayName();
+  console.log("connection success");
+  room = window.app.room = connection.initJitsiConference(
+    roomId,
+    conferenceOptions
+  );
   room.on(JitsiMeetJS.events.conference.TRACK_ADDED, onRemoteTrack);
   room.on(JitsiMeetJS.events.conference.TRACK_REMOVED, (track) => {
     console.log(`track removed!!!${track}`);
@@ -187,20 +194,21 @@ function onConnectionSuccess() {
   );
   console.log("Room join process...");
   room.join();
+  room.setReceiverVideoConstraint(720);
 }
 
 /**
  * This function is called when the connection fail.
  */
 function onConnectionFailed() {
-  console.error("Connection Failed!");
+  console.log("Connection Failed!");
 }
 
 /**
  * This function is called when the connection fail.
  */
 function onDeviceListChanged(devices) {
-  console.info("current devices", devices);
+  console.log("current devices", devices);
 }
 
 /**
@@ -277,16 +285,13 @@ $(window).bind("beforeunload", unload);
 $(window).bind("unload", unload);
 
 JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.INFO);
-const initOptions = {
-  disableAudioLevels: true,
-};
 
 JitsiMeetJS.init(initOptions);
 
 connection = window.app.connection = new JitsiMeetJS.JitsiConnection(
   null,
   null,
-  options
+  connectionOptions
 );
 
 connection.addEventListener(
